@@ -1,10 +1,8 @@
 import axios, { AxiosError } from 'axios'
 
-const baseURL = import.meta.env.VITE_API_BASE_URL
+import { handleSessionError } from '@/lib/handle-server-error'
 
-if (!baseURL) {
-  throw new Error('base url is not configured')
-}
+const baseURL = import.meta.env.VITE_API_BASE_URL ?? '/'
 
 const http = axios.create({
   baseURL,
@@ -14,6 +12,10 @@ const http = axios.create({
 http.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    
+    if(error.response?.status === 401) {
+      handleSessionError()
+    }
+
+    return Promise.reject(error)
   }
 )

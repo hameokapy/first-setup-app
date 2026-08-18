@@ -1,11 +1,10 @@
-import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createRouter, Router, RouterProvider } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
+import { type ErrorMeta, handleApiError } from '@/lib/handle-server-error'
 import { routeTree } from '@/routeTree.gen.ts'
-
-import { handleApiError } from './lib/handle-server-error'
 
 import '@/index.css'
 
@@ -20,8 +19,13 @@ const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error, query) => {
       if(query.state.data !== undefined) {
-        handleApiError(error, query.meta)
+        handleApiError(error, query.meta as ErrorMeta)
       }
+    }
+  }),
+  mutationCache: new MutationCache({
+    onError: (error, _variables, _context, mutation) => {
+      handleApiError(error, mutation.meta as ErrorMeta)
     }
   })
 })

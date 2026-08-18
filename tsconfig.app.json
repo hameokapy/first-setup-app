@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     /* Setting up base import */
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
