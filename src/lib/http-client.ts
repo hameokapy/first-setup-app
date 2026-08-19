@@ -18,7 +18,7 @@ http.interceptors.response.use(
       handleSessionError()
     }
 
-    if(status === undefined || status >= 400) {
+    if (status === undefined || status >= 400) {
       handleApiError(error)
     }
 
@@ -29,16 +29,14 @@ http.interceptors.response.use(
 export const axiosClient = {
   get: async (
     endpoint: string,
-    queryParams: Record<string, string>,
+    queryParams: Record<string, unknown>,
     params: Record<string, unknown>,
     config: AxiosRequestConfig
   ) => {
     const url = generateCompletedEndpoint(endpoint, params)
 
     const response = await http.get(url, {
-      params: {
-        queryParams,
-      },
+      params: queryParams,
       ...config,
     })
     return response.data

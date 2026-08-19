@@ -3,6 +3,7 @@ import { createRouter, Router, RouterProvider } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
+import { getErrorStatus } from '@/lib/handle-server-error'
 import { routeTree } from '@/routeTree.gen.ts'
 
 import '@/index.css'
@@ -11,7 +12,15 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 30_000,
-      retry: 1,
+      retry: (failureCount, error) => {
+        const status = getErrorStatus(error)
+
+        if (status && status >= 400 && status < 500) {
+          return false
+        }
+
+        return failureCount < 1
+      },
       refetchOnWindowFocus: false,
     },
   },
