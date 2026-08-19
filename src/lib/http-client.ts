@@ -1,6 +1,6 @@
 import axios, { type AxiosRequestConfig } from 'axios'
 
-import { getErrorStatus, handleSessionError } from '@/lib/handle-server-error'
+import { getErrorStatus, handleApiError, handleSessionError } from '@/lib/handle-server-error'
 
 const baseURL = import.meta.env.VITE_API_BASE_URL ?? '/'
 
@@ -16,6 +16,10 @@ http.interceptors.response.use(
 
     if (status === 401 && axios.isAxiosError(error) && !error.config?.url?.startsWith('/auth/')) {
       handleSessionError()
+    }
+
+    if(status === undefined || status >= 400) {
+      handleApiError(error)
     }
 
     return Promise.reject(error)
