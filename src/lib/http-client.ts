@@ -1,6 +1,6 @@
-import axios, { AxiosError, type AxiosRequestConfig } from 'axios'
+import axios, { type AxiosRequestConfig } from 'axios'
 
-import { handleSessionError } from '@/lib/handle-server-error'
+import { getErrorStatus, handleSessionError } from '@/lib/handle-server-error'
 
 const baseURL = import.meta.env.VITE_API_BASE_URL ?? '/'
 
@@ -11,8 +11,10 @@ const http = axios.create({
 
 http.interceptors.response.use(
   (response) => response,
-  async (error: AxiosError) => {
-    if(error.response?.status === 401) {
+  async (error: unknown) => {
+    const status = getErrorStatus(error)
+
+    if (status === 401 && axios.isAxiosError(error) && !error.config?.url?.startsWith('/auth/')) {
       handleSessionError()
     }
 
@@ -31,9 +33,9 @@ export const axiosClient = {
 
     const response = await http.get(url, {
       params: {
-        queryParams
+        queryParams,
       },
-      ...config
+      ...config,
     })
     return response.data
   },

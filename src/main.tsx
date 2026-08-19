@@ -18,16 +18,16 @@ const queryClient = new QueryClient({
   },
   queryCache: new QueryCache({
     onError: (error, query) => {
-      if(query.state.data !== undefined) {
+      if (query.state.data !== undefined) {
         handleApiError(error, query.meta as ErrorMeta)
       }
-    }
+    },
   }),
   mutationCache: new MutationCache({
     onError: (error, _variables, _context, mutation) => {
       handleApiError(error, mutation.meta as ErrorMeta)
-    }
-  })
+    },
+  }),
 })
 
 const router = createRouter({
