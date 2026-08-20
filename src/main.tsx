@@ -4,6 +4,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import { getErrorStatus } from '@/lib/handle-server-error'
+import { deLocalizeUrl, localizeUrl } from '@/paraglide/runtime'
 import { routeTree } from '@/routeTree.gen.ts'
 
 import '@/index.css'
@@ -30,11 +31,15 @@ const router = createRouter({
   routeTree,
   context: { queryClient },
   defaultPreload: 'intent',
+  rewrite: {
+    input: ({url}) => deLocalizeUrl(url),
+    output: ({url}) => localizeUrl(url)
+  }
 })
 
 declare module '@tanstack/react-router' {
   interface Register {
-    route: typeof Router
+    router: typeof Router
   }
 }
 

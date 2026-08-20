@@ -10,7 +10,7 @@ import prettierConfig from 'eslint-config-prettier'
 import perfectionist from 'eslint-plugin-perfectionist'
 
 export default defineConfig([
-  globalIgnores(['dist', 'src/routeTree.gen.ts']),
+  globalIgnores(['dist', 'src/routeTree.gen.ts', 'src/paraglide']),
   ...pluginRouter.configs['flat/recommended'],
   ...pluginQuery.configs['flat/recommended'],
   {

@@ -6,6 +6,9 @@
     /* Setting up base import */
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+
+    /* Setting up for paraglide */
+    "allowJs": true
   }
 }
