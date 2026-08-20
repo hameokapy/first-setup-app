@@ -18,12 +18,15 @@ http.interceptors.response.use(
   }
 )
 
+type PathParamValue = string | number
+type PathParamName<Path extends string> = Path extends `${string}:${infer Param}/${infer Rest}` ? Param | PathParamName<Rest> : Path extends `${string}:${infer Param}` ? Param : never
+
 export const axiosClient = {
-  get: async (
-    endpoint: string,
-    queryParams: Record<string, unknown>,
-    params: Record<string, unknown>,
-    config: AxiosRequestConfig
+  get: async<Endpoint extends string> (
+    endpoint: Endpoint,
+    queryParams?: Record<string, string | number>,
+    params?: Record<PathParamName<Endpoint>, PathParamValue>,
+    config?: AxiosRequestConfig
   ) => {
     const url = generateCompletedEndpoint(endpoint, params)
 
@@ -33,10 +36,20 @@ export const axiosClient = {
     })
     return response.data
   },
+  post: async (endpoint: string, payload: unknown) => {
+    const response = await http.post(endpoint, payload)
+    return response.data
+  }
 }
 
-function generateCompletedEndpoint(endpoint: string, params: Record<string, unknown>): string {
+function generateCompletedEndpoint(endpoint: string, params?: Record<string, PathParamValue>): string {
+  if(params === undefined) {
+    return endpoint
+  }
+
   return endpoint.replace(/:([a-zA-Z0-9]+)/g, (_, key) => {
-    return params[key] !== undefined ? String(params[key]) : `:${key}`
+    if(params[key] === undefined)
+       throw new Error('No value found for key: ' + key)
+    return String(params[key])
   })
 }
