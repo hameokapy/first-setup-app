@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as authSignInRouteImport } from './routes/(auth)/sign-in'
 import { Route as AuthenticatedPostIndexRouteImport } from './routes/_authenticated/post/index'
 
 const IndexRoute = IndexRouteImport.update({
@@ -22,6 +23,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
+const authSignInRoute = authSignInRouteImport.update({
+  id: '/(auth)/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedPostIndexRoute = AuthenticatedPostIndexRouteImport.update({
   id: '/post/',
   path: '/post/',
@@ -30,29 +36,38 @@ const AuthenticatedPostIndexRoute = AuthenticatedPostIndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/sign-in': typeof authSignInRoute
   '/post/': typeof AuthenticatedPostIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/sign-in': typeof authSignInRoute
   '/post': typeof AuthenticatedPostIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/(auth)/sign-in': typeof authSignInRoute
   '/_authenticated/post/': typeof AuthenticatedPostIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/post/'
+  fullPaths: '/' | '/sign-in' | '/post/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/post'
-  id: '__root__' | '/' | '/_authenticated' | '/_authenticated/post/'
+  to: '/' | '/sign-in' | '/post'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/(auth)/sign-in'
+    | '/_authenticated/post/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  authSignInRoute: typeof authSignInRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -69,6 +84,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/sign-in': {
+      id: '/(auth)/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof authSignInRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/post/': {
@@ -95,6 +117,7 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  authSignInRoute: authSignInRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
