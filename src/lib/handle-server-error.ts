@@ -12,6 +12,15 @@ export function handleApiError(error: unknown, meta?: ErrorMeta): void {
   const status = getErrorStatus(error)
   const backendMsg = getBackendErrorMessage(error)
 
+  if (status === 401 && axios.isAxiosError(error) && !error.config?.url?.startsWith('/auth/')) {
+    //TODO: remove stored access token in local storage
+
+    if (window.location.pathname !== '/login') {
+      const redirectUrl = encodeURIComponent(window.location.pathname + window.location.search)
+      window.location.href = `/login?redirect=${redirectUrl}`
+    }
+  }
+
   if (status === 403) {
     toast.error(meta?.errorMsg ?? backendMsg ?? 'Unauthorized action!')
     return
@@ -23,15 +32,6 @@ export function handleApiError(error: unknown, meta?: ErrorMeta): void {
 
   if (status === undefined || status >= 500) {
     toast.error(meta?.errorMsg ?? backendMsg ?? 'Something went wrong. Please try again!')
-  }
-}
-
-export function handleSessionError(): void {
-  //TODO: remove stored access token in local storage
-
-  if (window.location.pathname !== '/login') {
-    const redirectUrl = encodeURIComponent(window.location.pathname + window.location.search)
-    window.location.href = `/login?redirect=${redirectUrl}`
   }
 }
 
