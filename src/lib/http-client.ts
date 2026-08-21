@@ -1,12 +1,23 @@
 import axios, { type AxiosRequestConfig } from 'axios'
 
 import { handleApiError } from '@/lib/handle-server-error'
+import { useAuthStore } from '@/stores/auth-store'
 
 const baseURL = import.meta.env.VITE_API_BASE_URL ?? '/'
 
 const http = axios.create({
   baseURL,
   headers: { 'Content-Type': 'application/json' },
+})
+
+http.interceptors.request.use(async (config) => {
+  const accessToken = useAuthStore.getState().auth.accessToken
+
+  if(accessToken && !config.headers.has('Authorization')) {
+    config.headers.set('Authorization', `Bearer ${accessToken}`)
+  }
+
+  return config
 })
 
 http.interceptors.response.use(
@@ -22,12 +33,12 @@ type PathParamValue = string | number
 type PathParamName<Path extends string> = Path extends `${string}:${infer Param}/${infer Rest}` ? Param | PathParamName<Rest> : Path extends `${string}:${infer Param}` ? Param : never
 
 export const axiosClient = {
-  get: async<Endpoint extends string> (
+  get: async<Endpoint extends string, TResponse> (
     endpoint: Endpoint,
     queryParams?: Record<string, string | number>,
     params?: Record<PathParamName<Endpoint>, PathParamValue>,
     config?: AxiosRequestConfig
-  ) => {
+  ): Promise<TResponse> => {
     const url = generateCompletedEndpoint(endpoint, params)
 
     const response = await http.get(url, {
@@ -36,7 +47,7 @@ export const axiosClient = {
     })
     return response.data
   },
-  post: async (endpoint: string, payload: unknown) => {
+  post: async<TResponse> (endpoint: string, payload: unknown): Promise<TResponse> => {
     const response = await http.post(endpoint, payload)
     return response.data
   }

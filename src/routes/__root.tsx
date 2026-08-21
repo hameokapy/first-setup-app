@@ -4,6 +4,8 @@ import { createRootRouteWithContext, Outlet, redirect } from '@tanstack/react-ro
 import { Toaster } from 'sonner'
 
 import { LanguageSwitcher } from '@/components/language-switcher'
+import { GeneralError } from '@/features/errors/general-error'
+import { NotFoundError } from '@/features/errors/not-found-error'
 import { m } from '@/paraglide/messages'
 import { getLocale, shouldRedirect } from '@/paraglide/runtime'
 
@@ -22,7 +24,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     }
   },
   component: RootLayout,
-  notFoundComponent: () => <div>404 - Not Found</div>,
+  notFoundComponent: NotFoundError,
+  errorComponent: GeneralError
 })
 
 function RootLayout() {

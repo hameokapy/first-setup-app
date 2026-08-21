@@ -1,4 +1,8 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
-  "example_message": "Xin chào {username}"
+  "example_message": "Xin chào {username}",
+  "unauthorized_message": "Bạn không được phép truy cập tính năng này!",
+  "not_found_message": "Không tìm thấy trang!",
+  "general_error_message": "Hệ thống đang gặp sự cố. Vui lòng thử lại!",
+  "return_homepage": "Quay trở lại trang chủ"
 }

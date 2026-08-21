@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { createRouter, Router, RouterProvider } from '@tanstack/react-router'
+import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
@@ -39,7 +39,7 @@ const router = createRouter({
 
 declare module '@tanstack/react-router' {
   interface Register {
-    router: typeof Router
+    router: typeof router
   }
 }
 

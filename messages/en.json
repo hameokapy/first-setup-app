@@ -1,4 +1,8 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
-  "example_message": "Hello world {username}"
+  "example_message": "Hello world {username}",
+  "unauthorized_message": "You are not allowed to access this feature!",
+  "not_found_message": "Page not found!",
+  "general_error_message": "System undergoing trouble. Please try again!",
+  "return_homepage": "Return to Homepage"
 }

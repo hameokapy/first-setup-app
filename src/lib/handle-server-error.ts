@@ -1,5 +1,8 @@
+import { redirect } from '@tanstack/react-router'
 import axios from 'axios'
 import { toast } from 'sonner'
+
+import { useAuthStore } from '@/stores/auth-store'
 
 export type ErrorMeta = {
   errorMsg: string
@@ -12,8 +15,11 @@ export function handleApiError(error: unknown, meta?: ErrorMeta): void {
   const status = getErrorStatus(error)
   const backendMsg = getBackendErrorMessage(error)
 
+  const { auth } = useAuthStore.getState()
+
   if (status === 401 && axios.isAxiosError(error) && !error.config?.url?.startsWith('/auth/')) {
-    //TODO: remove stored access token in local storage
+    
+    auth.reset()
 
     if (window.location.pathname !== '/login') {
       const redirectUrl = encodeURIComponent(window.location.pathname + window.location.search)
@@ -23,6 +29,7 @@ export function handleApiError(error: unknown, meta?: ErrorMeta): void {
 
   if (status === 403) {
     toast.error(meta?.errorMsg ?? backendMsg ?? 'Unauthorized action!')
+    throw redirect({ to: '/403' })
     return
   }
 

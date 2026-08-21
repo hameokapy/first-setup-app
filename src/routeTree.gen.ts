@@ -12,6 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as authSignInRouteImport } from './routes/(auth)/sign-in'
+import { Route as error403RouteImport } from './routes/(error)/403'
+import { Route as error404RouteImport } from './routes/(error)/404'
+import { Route as error500RouteImport } from './routes/(error)/500'
 import { Route as AuthenticatedPostIndexRouteImport } from './routes/_authenticated/post/index'
 
 const IndexRoute = IndexRouteImport.update({
@@ -28,6 +31,21 @@ const authSignInRoute = authSignInRouteImport.update({
   path: '/sign-in',
   getParentRoute: () => rootRouteImport,
 } as any)
+const error403Route = error403RouteImport.update({
+  id: '/(error)/403',
+  path: '/403',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const error404Route = error404RouteImport.update({
+  id: '/(error)/404',
+  path: '/404',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const error500Route = error500RouteImport.update({
+  id: '/(error)/500',
+  path: '/500',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedPostIndexRoute = AuthenticatedPostIndexRouteImport.update({
   id: '/post/',
   path: '/post/',
@@ -37,11 +55,17 @@ const AuthenticatedPostIndexRoute = AuthenticatedPostIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/sign-in': typeof authSignInRoute
+  '/403': typeof error403Route
+  '/404': typeof error404Route
+  '/500': typeof error500Route
   '/post/': typeof AuthenticatedPostIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/sign-in': typeof authSignInRoute
+  '/403': typeof error403Route
+  '/404': typeof error404Route
+  '/500': typeof error500Route
   '/post': typeof AuthenticatedPostIndexRoute
 }
 export interface FileRoutesById {
@@ -49,18 +73,24 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/(auth)/sign-in': typeof authSignInRoute
+  '/(error)/403': typeof error403Route
+  '/(error)/404': typeof error404Route
+  '/(error)/500': typeof error500Route
   '/_authenticated/post/': typeof AuthenticatedPostIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sign-in' | '/post/'
+  fullPaths: '/' | '/sign-in' | '/403' | '/404' | '/500' | '/post/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sign-in' | '/post'
+  to: '/' | '/sign-in' | '/403' | '/404' | '/500' | '/post'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/(auth)/sign-in'
+    | '/(error)/403'
+    | '/(error)/404'
+    | '/(error)/500'
     | '/_authenticated/post/'
   fileRoutesById: FileRoutesById
 }
@@ -68,6 +98,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   authSignInRoute: typeof authSignInRoute
+  error403Route: typeof error403Route
+  error404Route: typeof error404Route
+  error500Route: typeof error500Route
 }
 
 declare module '@tanstack/react-router' {
@@ -91,6 +124,27 @@ declare module '@tanstack/react-router' {
       path: '/sign-in'
       fullPath: '/sign-in'
       preLoaderRoute: typeof authSignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(error)/403': {
+      id: '/(error)/403'
+      path: '/403'
+      fullPath: '/403'
+      preLoaderRoute: typeof error403RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(error)/404': {
+      id: '/(error)/404'
+      path: '/404'
+      fullPath: '/404'
+      preLoaderRoute: typeof error404RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(error)/500': {
+      id: '/(error)/500'
+      path: '/500'
+      fullPath: '/500'
+      preLoaderRoute: typeof error500RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/post/': {
@@ -118,6 +172,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   authSignInRoute: authSignInRoute,
+  error403Route: error403Route,
+  error404Route: error404Route,
+  error500Route: error500Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
